@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>比赛中的推理 - 连线对阵图</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 8px;
+    }
+
+    h2 {
+      color: #2980b9;
+    }
+
+    .section {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      margin: 30px 0;
+      padding: 20px;
+    }
+
+    .round-robin-animation,
+    .fixture-animation,
+    .points-animation {
+      width: 100%;
+      height: 350px;
+      background: #f0f3f7;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .team-node,
+    .team-card {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #3498db;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      position: absolute;
+      transition: 0.5s;
+      z-index: 10;
+    }
+
+    .team-card {
+      border-radius: 6px;
+      background-color: #2ecc71;
+      width: 70px;
+      height: 40px;
+    }
+
+    .match-line,
+    .opponent-line,
+    .unknown-line {
+      position: absolute;
+      height: 2px;
+      transform-origin: left center;
+      transition: 0.5s;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .match-line {
+      background-color: #e74c3c;
+    }
+
+    .opponent-line {
+      background-color: #9b59b6;
+    }
+
+    .unknown-line {
+      background-color: #bdc3c7;
+    }
+
+    .rule {
+      margin-top: 20px;
+      padding: 12px;
+      border-left: 4px solid #3498db;
+      background: #f8f9fa;
+      border-radius: 6px;
+    }
+
+    .rule ul {
+      padding-left: 20px;
+    }
+
+    .question {
+      font-weight: bold;
+      margin-top: 10px;
+      color: #e74c3c;
+    }
+
+    .answer {
+      padding-left: 15px;
+      border-left: 2px solid #2ecc71;
+      color: #27ae60;
+    }
+
+    .exercise {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f0f8ff;
+      border-radius: 6px;
+    }
+
+    .result-block {
+      width: 80px;
+      height: 60px;
+      border-radius: 8px;
+      position: absolute;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .win {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .draw {
+      background-color: #f39c12;
+      color: white;
+    }
+
+    .lose {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .points-total,
+    .points-formula {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+    }
+
+    .points-formula {
+      top: 10px;
+      color: #34495e;
+    }
+
+    .points-total {
+      bottom: 15px;
+      font-size: 22px;
+      color: #2980b9;
+      font-weight: bold;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes draw-line {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+
+    @keyframes highlight {
+      0%, 100% { background-color: #2ecc71; }
+      50% { background-color: #3498db; }
+    }
+  </style>
+</head>
+<body>
+<h1>趣味数学30</h1>
+
+
+<h2>比赛中的推理 - 连线对阵图</h2>
+<h3>1. 单循环比赛场次数计算</h3>
+<div class="section">
+  
+  
+  <div class="rule">
+    <h3>运算法则</h3>
+    <ul>
+      <li>单循环比赛中，每队与其他队伍各比赛一场</li>
+      <li>总场次数 = n×(n−1)÷2，其中n是队伍数</li>
+      <li>某队比赛场数 = n−1</li>
+    </ul>
+  </div>
+<br>
+  <div class="round-robin-animation">
+    <div style="position: absolute; bottom: 10px; font-size: 14px;">6队比赛，15场（n×(n−1)/2）</div>
+  </div>
+
+  <div class="exercise">
+    <div class="question">有6支队伍参加单循环比赛，一共有多少场比赛？</div>
+    <div class="answer">答：15场（6×5÷2=15）</div>
+    
+    <div class="question">小强所在队伍有5支队伍，他需要比赛几场？</div>
+    <div class="answer">答：3场（5-1=4）</div>
+    
+    <div class="question">某校举办篮球单循环赛，共有​​4支队伍​​参赛，分别是：
+
+火箭队（小强所在队伍）、
+勇士队、
+湖人队、
+公牛队，
+​​
+在单循环赛制下：
+
+<br>(1)火箭队（小强所在队伍）需要比赛多少场？
+<br>(2)整个赛事总共需要进行多少场比赛？
+<br>(3)如果每队每天最多进行1场比赛，至少需要多少天才能完成所有比赛？</div>
+    <div class="answer">答：7支</div>
+	<div class="question">某校篮球联赛采用单循环赛制，共进行了45场比赛，问：
+<br>(1) 共有多少支队伍参赛？<br>(2) 若每队每天最多进行2场比赛，最少需要多少天完成？</div>
+    <div class="answer">答：10支，9天</div>
+	
+	
+  </div>
+</div>
+ <h3>2. 对阵关系推断</h3>
+<div class="section">
+ 
+  
+  <div class="rule">
+    <h3>运算法则</h3>
+    <ul>
+      <li>根据比赛场次数和已知对阵信息，推断未明的比赛对手</li>
+      <li>利用排除法和已知结果排定对阵图</li>
+    </ul>
+  </div>
+<br>
+  <div class="fixture-animation">
+    <div style="position: absolute; bottom: 10px; font-size: 14px;">紫色为已知对阵，灰色为未完成</div>
+  </div>
+
+  <div class="exercise">
+    <div class="question">在5支队伍（A,B,C,D,E）的单循环赛中，小强共需赛4场，已知对手是A,B,C，则第四个对手是谁？</div>
+    <div class="answer"> D或E</div>
+    
+    <div class="question">在6支队伍（A,B,C,D,E,F）的单循环赛中，E队共需赛5场，已知对手是A,B,C,D，则剩余对手是谁？</div>
+    <div class="answer">F</div>
+    
+    <div class="question">在6支队伍（A,B,C,D,E,F）的单循环赛中，某队共需赛5场，已确定对手是A,B,C，则剩余两个对手是谁？</div>
+    <div class="answer">​​ D,E,F中的任意两个组合</div>
+  </div>
+</div>
+<h3>3. 积分与胜负场数计算</h3>
+<div class="section">
+  
+  
+  <div class="rule">
+    <h3>国际足球比赛（如FIFA世界杯、欧洲杯、各国联赛）​​通用的积分计算规则​</h3>
+    <ul>
+      <li>胜一场计3分，平一场计1分，负一场计0分</li>
+      <li>总积分 = 胜场数 × 3 + 平场数 × 1</li>
+      <li>根据总场次、胜平负关系计算积分分配</li>
+    </ul>
+  </div>
+<br>
+  <div class="points-animation">
+    <div class="points-formula">积分规则：胜×3 + 平×1</div>
+    <div class="points-total">计算中...</div>
+  </div>
+
+  <div class="exercise">
+    <div class="question">某队积分11分，比赛6场，已知平局2场，求胜场和负场数。</div>
+    <div class="answer">胜3场，平2场，负1场</div>
+    
+    <div class="question">某队比赛8场，积分18分，可能的胜平负组合有哪些？</div>
+    <div class="answer">两种可能：
+6胜0平2负，
+5胜3平0负</div>
+    
+    <div class="question">乙队已赛12场，积分25分。剩余6场中，若胜率50%、平局率30%，预测最终积分。</div>
+    <div class="answer">36分</div>
+  </div>
+</div>
+
+<script>
+  // 圆圈比赛图
+  const roundRobin = document.querySelector('.round-robin-animation');
+  const centerX = roundRobin.offsetWidth / 2;
+  const centerY = roundRobin.offsetHeight / 2;
+  const radius = Math.min(roundRobin.offsetWidth, roundRobin.offsetHeight) * 0.35;
+  const teamCount = 6;
+  const nodes = [];
+
+  for (let i = 0; i < teamCount; i++) {
+    const angle = (i * 2 * Math.PI) / teamCount - Math.PI / 2;
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
+
+    const node = document.createElement('div');
+    node.className = 'team-node';
+    node.textContent = String.fromCharCode(65 + i);
+    node.style.left = `${x - 25}px`;
+    node.style.top = `${y - 25}px`;
+    roundRobin.appendChild(node);
+    nodes.push({x, y});
+  }
+
+  let match = 0;
+  for (let i = 0; i < teamCount; i++) {
+    for (let j = i + 1; j < teamCount; j++) {
+      const dx = nodes[j].x - nodes[i].x;
+      const dy = nodes[j].y - nodes[i].y;
+      const length = Math.sqrt(dx * dx + dy * dy);
+      const angle = Math.atan2(dy, dx);
+
+      const line = document.createElement('div');
+      line.className = 'match-line';
+      line.style.width = `${length}px`;
+      line.style.left = `${nodes[i].x}px`;
+      line.style.top = `${nodes[i].y}px`;
+      line.style.transform = `rotate(${angle}rad)`;
+      roundRobin.appendChild(line);
+
+      setTimeout(() => {
+        line.style.opacity = '1';
+        line.style.animation = 'pulse 0.6s';
+      }, match * 150);
+      match++;
+    }
+  }
+
+  // 对阵图
+  const fixture = document.querySelector('.fixture-animation');
+  const teams = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const knownMatches = [['A','B'],['A','C'],['A','D'],['B','C'],['B','E'],['C','F'],['D','E'],['D','F'],['E','F']];
+  const totalMatches = [];
+
+  for (let i = 0; i < teams.length; i++) {
+    for (let j = i + 1; j < teams.length; j++) {
+      totalMatches.push([teams[i], teams[j]]);
+    }
+  }
+
+  const matchCounts = {};
+  teams.forEach(t => matchCounts[t] = 0);
+  knownMatches.forEach(([a,b]) => { matchCounts[a]++; matchCounts[b]++; });
+
+  const teamCards = {};
+  const cardWidth = 70;
+  const cardHeight = 40;
+  const containerWidth = fixture.offsetWidth;
+  const containerHeight = fixture.offsetHeight;
+  
+  // 计算卡片位置，确保居中且间距合理
+  const cols = 3;
+  const rows = 2;
+  const colGap = (containerWidth - cols * cardWidth) / (cols + 1);
+  const rowGap = (containerHeight - rows * cardHeight) / (rows + 1);
+  
+  teams.forEach((team, idx) => {
+    const col = idx % cols;
+    const row = Math.floor(idx / cols);
+    const x = colGap + col * (cardWidth + colGap);
+    const y = rowGap + row * (cardHeight + rowGap);
+
+    const card = document.createElement('div');
+    card.className = 'team-card';
+    card.textContent = team;
+    card.style.left = `${x}px`;
+    card.style.top = `${y}px`;
+    fixture.appendChild(card);
+    teamCards[team] = { 
+      x: x + cardWidth/2, 
+      y: y + cardHeight/2, 
+      el: card 
+    };
+  });
+
+  // 调整连线起点和终点，避免穿过方块
+  totalMatches.forEach(([a, b], i) => {
+    const t1 = teamCards[a];
+    const t2 = teamCards[b];
+    
+    // 计算方向向量
+    const dx = t2.x - t1.x;
+    const dy = t2.y - t1.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    const angle = Math.atan2(dy, dx);
+    
+    // 调整起点和终点，从卡片边缘开始连线
+    const offsetX = Math.cos(angle) * cardWidth/2;
+    const offsetY = Math.sin(angle) * cardHeight/2;
+    
+    const startX = t1.x + offsetX;
+    const startY = t1.y + offsetY;
+    const endX = t2.x - offsetX;
+    const endY = t2.y - offsetY;
+    
+    const adjustedLen = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+    const adjustedAngle = Math.atan2(endY - startY, endX - startX);
+
+    const line = document.createElement('div');
+    line.className = knownMatches.some(m => (m[0] === a && m[1] === b) || (m[0] === b && m[1] === a)) ? 'opponent-line' : 'unknown-line';
+    line.style.width = `${adjustedLen}px`;
+    line.style.left = `${startX}px`;
+    line.style.top = `${startY}px`;
+    line.style.transform = `rotate(${adjustedAngle}rad)`;
+    fixture.appendChild(line);
+
+    setTimeout(() => {
+      line.style.opacity = '1';
+      line.style.animation = 'draw-line 0.5s forwards';
+    }, i * 200);
+  });
+
+  teams.forEach(t => {
+    const rem = 5 - matchCounts[t];
+    if (rem > 0) {
+      const hint = document.createElement('div');
+      hint.textContent = `还需${rem}场`;
+      hint.style.position = 'absolute';
+      hint.style.fontSize = '12px';
+      hint.style.color = '#e74c3c';
+      hint.style.left = `${parseInt(teamCards[t].el.style.left) + cardWidth + 5}px`;
+      hint.style.top = `${parseInt(teamCards[t].el.style.top)}px`;
+      fixture.appendChild(hint);
+    }
+  });
+
+  // 积分动画
+  const results = [
+    { type: 'win', count: 4, label: '胜' },
+    { type: 'draw', count: 1, label: '平' },
+    { type: 'lose', count: 1, label: '负' }
+  ];
+
+  const pointsBox = document.querySelector('.points-animation');
+  const pointsTotal = document.querySelector('.points-total');
+
+  // 计算居中位置
+  const boxWidth = results.length * 110;
+  const startX = (pointsBox.offsetWidth - boxWidth) / 2;
+  
+  results.forEach((res, idx) => {
+    for (let i = 0; i < res.count; i++) {
+      const box = document.createElement('div');
+      box.className = `result-block ${res.type}`;
+      box.textContent = res.label;
+      box.style.left = `${startX + idx * 110}px`;
+      box.style.top = `${80 + i * 65}px`;
+      pointsBox.appendChild(box);
+
+      setTimeout(() => {
+        box.style.opacity = '1';
+        box.style.animation = 'pulse 0.6s';
+        if (idx === 2 && i === res.count - 1) {
+          setTimeout(() => {
+            let total = 0;
+            let formula = '';
+            results.forEach(r => {
+              const p = r.type === 'win' ? 3 : r.type === 'draw' ? 1 : 0;
+              formula += `${r.count}${r.label}×${p} + `;
+              total += r.count * p;
+            });
+            formula = formula.slice(0, -3) + `= ${total}分`;
+            pointsTotal.textContent = `总积分：${total}`;
+          }, 500);
+        }
+      }, (idx * 4 + i) * 400);
+    }
+  });
+</script>
+
+</body>
+</html>
