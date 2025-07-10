@@ -114,10 +114,44 @@
       color: #e74c3c;
     }
 
+    .answer-container {
+      background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+      border: 1px solid #d1fae5;
+      border-radius: 8px;
+      padding: 5px 15px;
+      margin: 15px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .answer-container:hover {
+      background: linear-gradient(135deg, #dcffe4 0%, #c6f6d5 100%);
+      transform: translateX(5px);
+    }
+    .answer-prompt {
+      color: #10b981;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+    }
+    .answer-prompt:before {
+      content: "✨";
+      margin-right: 10px;
+      font-size: 1.2em;
+    }
     .answer {
-      padding-left: 15px;
-      border-left: 2px solid #2ecc71;
-      color: #27ae60;
+      color: #0f9d58;
+      margin-left: 20px;
+      padding: 10px 15px;
+      background-color: rgba(16, 185, 129, 0.1);
+      border-left: 3px solid #10b981;
+      border-radius: 0 8px 8px 0;
+      display: none;
+      font-weight: bold;
+      animation: fadeIn 0.5s ease;
+    }
+    .show-answer .answer {
+      display: block;
     }
 
     .exercise {
@@ -186,17 +220,18 @@
       0%, 100% { background-color: #2ecc71; }
       50% { background-color: #3498db; }
     }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
 <h1>趣味数学30</h1>
 
-
 <h2>比赛中的推理 - 连线对阵图</h2>
 <h3>1. 单循环比赛场次数计算</h3>
 <div class="section">
-  
-  
   <div class="rule">
     <h3>运算法则</h3>
     <ul>
@@ -212,35 +247,42 @@
 
   <div class="exercise">
     <div class="question">有6支队伍参加单循环比赛，一共有多少场比赛？</div>
-    <div class="answer">答：15场（6×5÷2=15）</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">15场（6×5÷2=15）</div>
+    </div>
     
     <div class="question">小强所在队伍有5支队伍，他需要比赛几场？</div>
-    <div class="answer">答：3场（5-1=4）</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">4场（5-1=4）</div>
+    </div>
     
     <div class="question">某校举办篮球单循环赛，共有​​4支队伍​​参赛，分别是：
-
 火箭队（小强所在队伍）、
 勇士队、
 湖人队、
 公牛队，
-​​
-在单循环赛制下：
-
+​​在单循环赛制下：
 <br>(1)火箭队（小强所在队伍）需要比赛多少场？
 <br>(2)整个赛事总共需要进行多少场比赛？
 <br>(3)如果每队每天最多进行1场比赛，至少需要多少天才能完成所有比赛？</div>
-    <div class="answer">答：7支</div>
-	<div class="question">某校篮球联赛采用单循环赛制，共进行了45场比赛，问：
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">(1) 3场 (2) 6场 (3) 3天</div>
+    </div>
+    
+    <div class="question">某校篮球联赛采用单循环赛制，共进行了45场比赛，问：
 <br>(1) 共有多少支队伍参赛？<br>(2) 若每队每天最多进行2场比赛，最少需要多少天完成？</div>
-    <div class="answer">答：10支，9天</div>
-	
-	
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">(1) 10支 (2) 9天</div>
+    </div>
   </div>
 </div>
- <h3>2. 对阵关系推断</h3>
+
+<h3>2. 对阵关系推断</h3>
 <div class="section">
- 
-  
   <div class="rule">
     <h3>运算法则</h3>
     <ul>
@@ -255,19 +297,27 @@
 
   <div class="exercise">
     <div class="question">在5支队伍（A,B,C,D,E）的单循环赛中，小强共需赛4场，已知对手是A,B,C，则第四个对手是谁？</div>
-    <div class="answer"> D或E</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">D或E</div>
+    </div>
     
     <div class="question">在6支队伍（A,B,C,D,E,F）的单循环赛中，E队共需赛5场，已知对手是A,B,C,D，则剩余对手是谁？</div>
-    <div class="answer">F</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">F</div>
+    </div>
     
     <div class="question">在6支队伍（A,B,C,D,E,F）的单循环赛中，某队共需赛5场，已确定对手是A,B,C，则剩余两个对手是谁？</div>
-    <div class="answer">​​ D,E,F中的任意两个组合</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">D,E,F中的任意两个组合</div>
+    </div>
   </div>
 </div>
+
 <h3>3. 积分与胜负场数计算</h3>
 <div class="section">
-  
-  
   <div class="rule">
     <h3>国际足球比赛（如FIFA世界杯、欧洲杯、各国联赛）​​通用的积分计算规则​</h3>
     <ul>
@@ -284,15 +334,22 @@
 
   <div class="exercise">
     <div class="question">某队积分11分，比赛6场，已知平局2场，求胜场和负场数。</div>
-    <div class="answer">胜3场，平2场，负1场</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">胜3场，平2场，负1场</div>
+    </div>
     
     <div class="question">某队比赛8场，积分18分，可能的胜平负组合有哪些？</div>
-    <div class="answer">两种可能：
-6胜0平2负，
-5胜3平0负</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">两种可能：6胜0平2负，5胜3平0负</div>
+    </div>
     
     <div class="question">乙队已赛12场，积分25分。剩余6场中，若胜率50%、平局率30%，预测最终积分。</div>
-    <div class="answer">36分</div>
+    <div class="answer-container">
+      <div class="answer-prompt">点击显示答案</div>
+      <div class="answer">36分</div>
+    </div>
   </div>
 </div>
 
@@ -483,7 +540,16 @@
       }, (idx * 4 + i) * 400);
     }
   });
-</script>
 
+  // 答案显示功能
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.addEventListener('click', function(e) {
+      const container = e.target.closest('.answer-container');
+      if(container) {
+        container.classList.toggle('show-answer');
+      }
+    });
+  });
+</script>
 </body>
 </html>
